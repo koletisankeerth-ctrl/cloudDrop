@@ -1,0 +1,13 @@
+# Loaded only by tests (@ActiveProfiles("test")). Overrides the DB and secrets; everything else comes from application.yml,
+# including ddl-auto=validate and schema.sql, so these tests also check that schema.sql matches the JPA entities.
+spring:
+  datasource:
+    # In-memory H2 pretending to be MySQL. Not identical to real MySQL, so still verify manually against MySQL.
+    url: jdbc:h2:mem:clouddrop;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+
+clouddrop:
+  jwt:
+    secret: integration-test-secret-at-least-32-characters
+# clouddrop.storage.upload-dir is set per run to a temp directory (see IntegrationTestBase)

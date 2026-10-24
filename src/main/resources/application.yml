@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: clouddrop-backend
+
+  # No defaults on purpose: if DB_URL / DB_USERNAME / DB_PASSWORD are not set, startup fails.
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate          # Hibernate only CHECKS the schema; it never creates/changes tables
+    open-in-view: false           # no DB session held open during view rendering
+    # false (default): schema.sql runs BEFORE Hibernate initialises, so validate sees the tables.
+    defer-datasource-initialization: false
+
+  sql:
+    init:
+      mode: always                # run schema.sql on every startup (it is idempotent)
+
+  servlet:
+    multipart:
+      max-file-size: 5GB
+      max-request-size: 5GB
+      file-size-threshold: 1MB    # parts bigger than 1MB are streamed to a temp file, not kept in memory
+
+clouddrop:
+  jwt:
+    secret: ${JWT_SECRET}         # required, at least 32 characters (validated in AppProperties)
+    expiration-hours: ${JWT_EXPIRATION_HOURS:24}
+  storage:
+    upload-dir: ${UPLOAD_DIR}     # required; keep it OUTSIDE the project folder
+    max-file-size-bytes: 5368709120   # 5 GB
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
